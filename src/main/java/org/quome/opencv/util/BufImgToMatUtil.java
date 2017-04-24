@@ -4,8 +4,14 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
 
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.imgcodecs.Imgcodecs;
 
 public class BufImgToMatUtil {
 
@@ -44,5 +50,40 @@ public class BufImgToMatUtil {
 		Mat mat = Mat.eye(original.getHeight(), original.getWidth(), matType);
 		mat.put(0, 0, pixels);
 		return mat;
+	}
+
+	// The file extension string should be ".jpg", ".png", etc
+	public static BufferedImage getImage(Mat amatrix, String fileExtension) {
+		MatOfByte mob = new MatOfByte();
+		// convert the matrix into a matrix of bytes appropriate for
+		// this file extension
+		Imgcodecs.imencode(fileExtension, amatrix, mob);
+		// convert the "matrix of bytes" into a byte array
+		byte[] byteArray = mob.toArray();
+		BufferedImage bufImage = null;
+		try {
+			InputStream in = new ByteArrayInputStream(byteArray);
+			bufImage = ImageIO.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bufImage;
+	}
+	
+	// The file extension string should be ".jpg", ".png", etc
+	public static InputStream getImageInputStream(Mat amatrix, String fileExtension) {
+		MatOfByte mob = new MatOfByte();
+		// convert the matrix into a matrix of bytes appropriate for
+		// this file extension
+		Imgcodecs.imencode(fileExtension, amatrix, mob);
+		// convert the "matrix of bytes" into a byte array
+		byte[] byteArray = mob.toArray();
+		InputStream in = null;
+		try {
+			in = new ByteArrayInputStream(byteArray);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return in;
 	}
 }

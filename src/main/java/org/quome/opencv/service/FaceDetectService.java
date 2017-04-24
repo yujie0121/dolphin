@@ -2,6 +2,7 @@ package org.quome.opencv.service;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -12,7 +13,6 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import org.quome.opencv.util.BufImgToMatUtil;
@@ -27,8 +27,9 @@ public class FaceDetectService {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
 	
-	public void detectFace(MultipartFile file, String targetName) {
+	public InputStream detectFace(MultipartFile file, String targetName) {
 
+		InputStream result = null;
 		
 		try {
 			// Create a face detector from the cascade file in the resources
@@ -60,10 +61,12 @@ public class FaceDetectService {
 
 			// Save the visualized detection.
 			System.out.println(String.format("Writing %s", targetName));
-			Imgcodecs.imwrite(targetName, image);
+			result = BufImgToMatUtil.getImageInputStream(image, ".png");
+//			Imgcodecs.imwrite(targetName, image);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return result;
 	}
 }

@@ -7,12 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+
+import javax.imageio.ImageIO;
 
 @Service
 public class FileSystemStorageService implements StorageService {
@@ -33,6 +37,18 @@ public class FileSystemStorageService implements StorageService {
             Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
+        }
+    }
+    
+    @Override
+    public void storeInputStream(InputStream is, String name) {
+        try {
+            if (is == null) {
+                throw new StorageException("Failed to store empty file " + name);
+            }
+            Files.copy(is, this.rootLocation.resolve(name));
+        } catch (IOException e) {
+            throw new StorageException("Failed to store file " + name, e);
         }
     }
 
