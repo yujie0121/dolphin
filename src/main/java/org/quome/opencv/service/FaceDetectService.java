@@ -15,6 +15,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
+import org.quome.opencv.util.BufImgToMatUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,10 +36,13 @@ public class FaceDetectService {
 			CascadeClassifier faceDetector = new CascadeClassifier(getClass()
 					.getResource("/lbpcascade/lbpcascade_frontalface.xml").getPath().substring(1).replace("%20", " "));
 			BufferedImage bufferedImage = ImageIO.read(file.getInputStream());
-			int rows = bufferedImage.getWidth();
+			
+			Mat image = BufImgToMatUtil.getMat(bufferedImage, BufferedImage.TYPE_3BYTE_BGR, CvType.CV_8UC3);
+			
+			/*int rows = bufferedImage.getWidth();
 			int cols = bufferedImage.getHeight();
 			int type = CvType.CV_8UC3;
-			Mat image = new Mat(rows,cols,type);
+			Mat image = new Mat(rows,cols,type);*/
 
 			// Detect faces in the image.
 			// MatOfRect is a special container class for Rect.
